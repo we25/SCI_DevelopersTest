@@ -1,0 +1,35 @@
+﻿@*
+    Remove - JobTitle
+*@
+
+@model JobTitleVM
+
+<div class="alert alert-dismissible alert-danger">
+    @* <button type="button" class="btn-close" data-bs-dismiss="alert"></button> *@
+    <h2 class="alert-heading">Warning!</h2>
+
+    <div>
+        <p class="mb-2">
+            Are you sure you want to remove this employee and all related information? This action cannot be undone,
+            <a href="/JobTitle/Create" class="alert-link">Back to Main Screen</a>.
+        </p>
+    </div>
+
+    <div class="card border-danger mb-3" style="max-width: 35rem;">
+        <div class="card-header">
+            <h2>Delete Job Title</h2>
+        </div>
+        <form asp-controller="JobTitle" asp-action="Remove" method="post">
+            <div class="card-body">
+                <h4 class="card-title">Job Name: <span id="rmv_item"> @Model.jobName </span> </h4>
+                <div>
+                    <button class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <a asp-controller="JobTitle" asp-action="Index">Close</a>
+                    </button>
+                </div>
+                <input type="hidden" asp-for="id" />
+            </div>
+        </form>
+    </div>
+</div>

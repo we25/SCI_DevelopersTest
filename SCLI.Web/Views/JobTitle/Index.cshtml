@@ -1,0 +1,42 @@
+﻿@*
+    Index - JobTitle
+*@
+
+@* @model List<JobTitleVM> *@
+
+@model List<JobTitleAndDepartmentVM>
+
+<div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="me-auto">Click button to create a new job title.</strong>
+    </div>
+    <div class="toast-body">
+        <button class="btn btn-danger">
+            <a href="/JobTitle/Create">Add Job title!</a>
+        </button>
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Department Name</th>
+            <th scope="col">Job Name</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Remove</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table-dark">
+                <td>@item.id</td>
+                <td>@item.departmentName</td>
+                <td>@item.jobName</td>
+                <td> <button class="btn btn-warning"><a href="/JobTitle/Edit?Id=@item.id">Edit</a></button> </td>
+                <td> <button class="btn btn-danger"><a href="/JobTitle/Remove?Id=@item.id">Delete</a></button> </td>
+            </tr>
+        }
+    </tbody>
+</table>

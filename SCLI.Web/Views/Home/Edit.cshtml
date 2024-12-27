@@ -1,0 +1,196 @@
+﻿@*
+    //EDIT
+*@
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+@model EmployeeVM
+
+<script>
+    $(function () {
+        $("#DepartmentList").change(function () {
+            $("#jobTitleId").empty();
+            var cid = $("#DepartmentList option:selected").val();
+
+            var formData = new FormData();
+            formData.append("dept_id", cid);
+
+            $.ajax({
+                type: "post",
+                url: "/Home/GetJobsByDepartmentId",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    console.log(result); // Log the result to check the response
+                    $.each(result, function () {
+
+                        $("#jobTitleId").append("<option value='" + this.id + "'> " + this.jobName + "</option>");
+
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error: " + error); // Log any errors
+                }
+            });
+        });
+    });
+
+    function calculateAge() {
+        // الحصول على قيمة تاريخ الميلاد
+        var birthDate = document.getElementById("birthDate").value;
+        if (birthDate) {
+            // تحويل تاريخ الميلاد إلى كائن تاريخ
+            var birth = new Date(birthDate);
+            var today = new Date();
+
+            // حساب العمر
+            var age = today.getFullYear() - birth.getFullYear();
+            var monthDiff = today.getMonth() - birth.getMonth();
+
+            // إذا كان الشهر الحالي أقل من شهر الميلاد، أو إذا كنا في نفس الشهر ولكن اليوم أقل، نقص سنة واحدة
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+
+            // تعيين العمر في حقل "العمر"
+            document.getElementById("readOnlyInput").value = age;
+        }
+    }
+
+</script>
+
+<form asp-controller="Home" asp-action="Edit" method="post" class="container mt-4">
+    <fieldset class="border p-4 rounded">
+        <legend class="w-auto px-3">Application Edit Screen</legend>
+
+        <h2 class="text-center mb-4">Basic Info</h2>
+
+        <div class="row mb-3">
+
+            <div class="col-md-4">
+                <label for="employeeName" class="form-label">Employee Name:</label>
+                <input type="text" asp-for="fullName" class="form-control" id="employeeName" placeholder="Enter Employee Name">
+                <span asp-validation-for="fullName"></span>
+            </div>
+
+            @* <div class="col-md-4">
+            <label for="birthDate" class="form-label">Birth Date:</label>
+            <input type="date" asp-for="brithDate" class="form-control" id="birthDate">
+            <span asp-validation-for="brithDate"></span>
+            </div>
+
+            <div class="col-md-4">
+            <label class="form-label" for="readOnlyInput">Age:</label>
+            <input class="form-control" id="readOnlyInput" type="text" placeholder="Calculate Age..." readonly="">
+            </div> *@
+
+            <div class="col-md-4">
+                <label for="birthDate" class="form-label">Birth Date:</label>
+                <input type="date" asp-for="brithDate" class="form-control" id="birthDate" onchange="calculateAge()">
+                <span asp-validation-for="brithDate"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label" for="readOnlyInput">Age:</label>
+                <input class="form-control" id="readOnlyInput" type="text" placeholder="Calculate Age..." readonly="">
+            </div>
+
+        </div>
+
+        <div class="row mb-3">
+
+            <div class="col-md-4">
+                <label for="gender" class="form-label">Gender:</label>
+                <select asp-for="genderId" asp-items="ViewBag.GenderList" class="form-select" id="gender">
+                    <option disabled selected>Select Gender</option>
+                </select>
+                <span asp-validation-for="genderId"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label for="nationality" class="form-label">Nationality:</label>
+                <input type="text" asp-for="nationality" class="form-control" id="nationality" placeholder="Enter Nationality">
+                <span asp-validation-for="nationality"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label for="maritalStatus" class="form-label">Marital Status:</label>
+                <select asp-for="maritalStatusId" asp-items="ViewBag.MaritalStatusList" class="form-select" id="maritalStatus">
+                    <option disabled selected>Select Status</option>
+                </select>
+                <span asp-validation-for="maritalStatusId"></span>
+            </div>
+
+        </div>
+
+        <div class="row mb-3">
+
+            <div class="col-md-4">
+                <label for="religion" class="form-label">Religion:</label>
+                <select asp-for="relegionId" asp-items="ViewBag.RelegionList" class="form-select" id="religion">
+                    <option disabled selected>Select Religion</option>
+                </select>
+                <span asp-validation-for="relegionId"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label for="phone" class="form-label">Phone:</label>
+                <input type="tel" asp-for="phone" class="form-control" id="phone" placeholder="Enter Phone">
+                <span asp-validation-for="phone"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label for="address" class="form-label">Address:</label>
+                <input type="text" asp-for="address" class="form-control" id="address" placeholder="Enter Address">
+                <span asp-validation-for="address"></span>
+            </div>
+
+        </div>
+
+        <h2 class="text-center mt-4 mb-3">Job Information</h2>
+
+        <div class="row mb-3">
+
+            <div class="col-md-4">
+                <label for="department" class="form-label">Department:</label>
+                <select asp-for="depatmentId" id="DepartmentList" asp-items="ViewBag.DepartmentList" class="form-select">
+                    <option disabled selected>Select A Department</option>
+                </select>
+                <span asp-validation-for="depatmentId"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label for="jobTitle" class="form-label">Job Title:</label>
+                <select asp-for="jobTitleId" class="form-select">
+                    <option disabled selected>Select A Job title</option>
+                </select>
+                <span asp-validation-for="jobTitleId"></span>
+            </div>
+
+        </div>
+
+        <h2 class="text-center mt-4 mb-3">Education & Experience</h2>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="education" class="form-label">Education:</label>
+                <input type="text" asp-for="education" class="form-control" id="education" placeholder="Enter Education Details">
+            </div>
+            <div class="col-md-8">
+                <label for="experience" class="form-label">Experience:</label>
+                <textarea asp-for="experience" class="form-control" id="experience" rows="3" placeholder="Enter Experience"></textarea>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button class="btn btn-primary me-2">Save Changes</button>
+            <button class="btn btn-danger">
+                <a asp-controller="Home" asp-action="Index">Exit</a>
+            </button>
+        </div>
+        <input type="hidden" asp-for="id" />
+    </fieldset>
+</form>

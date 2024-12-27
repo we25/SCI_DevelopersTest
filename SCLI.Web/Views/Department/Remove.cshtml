@@ -1,0 +1,36 @@
+﻿@*
+    Remove - Department
+*@
+
+@model DepartmentVM
+
+<div class="alert alert-dismissible alert-danger">
+    @* <button type="button" class="btn-close" data-bs-dismiss="alert"></button> *@
+    <h2 class="alert-heading">Warning!</h2>
+
+    <div>
+        <p class="mb-2">
+            Are you sure you want to remove this department and all related information? This action cannot be undone,
+            <a href="/Department/Create" class="alert-link">Back to Main Screen</a>.
+        </p>
+    </div>
+
+    <div class="card border-danger mb-3" style="max-width: 35rem;">
+        <div class="card-header">
+            <h2>Delete department</h2>
+        </div>
+        <form asp-controller="Department" asp-action="Remove" method="post">
+            <div class="card-body">
+                <h4 class="card-title">Department Name: <span id="rmv_item"> @Model.departmentName </span> </h4>
+                <div>
+                    <button class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <a asp-controller="Department" asp-action="Index">Close</a>
+                    </button>
+                </div>
+                <input type="hidden" asp-for="id" />
+            </div>
+        </form>
+    </div>
+</div>
+

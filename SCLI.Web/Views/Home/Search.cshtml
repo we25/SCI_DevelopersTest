@@ -1,0 +1,91 @@
+﻿@* @*
+    Search - Employee
+*@
+
+@model List<EmployeeMainDataVM>
+
+<!-- Required Scripts -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<!-- Calculate Age Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const cards = document.querySelectorAll(".birthDate");
+
+        cards.forEach(card => {
+            const birthDateText = card.innerText;
+            if (birthDateText) {
+                const birthDate = new Date(birthDateText);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                card.closest(".employee-card").querySelector(".age").innerText = age;
+            }
+        });
+    });
+</script>
+
+<!-- Search Form -->
+<form asp-action="Search" method="post" class="d-flex" style="gap: 10px; margin-bottom: 20px; margin-top: 20px;">
+    <input class="form-control" type="text" name="name" placeholder="Search by name" style="width: 20%;" />
+    <button class="btn btn-secondary" type="submit">Search</button>
+    <button class="btn btn-secondary">
+        <a href="/Home/Index">Back to list</a>
+    </button>
+</form>
+
+<!-- Employee Cards -->
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card employee-card border-primary h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5>@item.fullName</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Birth Date:</strong> <span class="birthDate">
+                            @{
+                                var englishCulture = new System.Globalization.CultureInfo("en-US");
+                                var birthDate = item.brithDate == DateTime.MinValue
+                                    ? "Not Available"
+                                    : item.brithDate.ToString("d MMM yyyy", englishCulture).ToUpper();
+                            }
+                            <bdi>@birthDate</bdi>
+                        </span></p>
+                        <p><strong>Age:</strong> <span class="age"></span></p>
+                        <p><strong>Nationality:</strong> @item.nationality</p>
+                        <p><strong>Gender:</strong> @item.gender</p>
+                        <p><strong>Marital Status:</strong> @item.maritalStatus</p>
+                        <p><strong>Religion:</strong> @item.relegion</p>
+                        <p><strong>Phone:</strong> @item.phone</p>
+                        <p><strong>Address:</strong> @item.address</p>
+                        <p><strong>Department:</strong> @item.depatment</p>
+                        <p><strong>Job Title:</strong> @item.jobTitle</p>
+                        <p><strong>Education:</strong> @(string.IsNullOrEmpty(item.education) ? "Information not available" : item.education)</p>
+                        <p><strong> Experience :</strong > @(string.IsNullOrEmpty(item.experience) ? "Information not available" : item.experience)</p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="/Home/Edit?Id=@item.id" class="btn btn-warning me-2">Edit</a>
+                        <a href="/Home/Remove?Id=@item.id" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center">
+            <p>No results found</p>
+        </div>
+    }
+</div>

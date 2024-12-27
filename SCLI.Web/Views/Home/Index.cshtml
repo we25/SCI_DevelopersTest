@@ -1,0 +1,95 @@
+﻿@{
+    //INDEX
+}
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+@model List<EmployeeIndexVM>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const rows = document.querySelectorAll("#employeeTable tbody tr");
+
+        rows.forEach(row => {
+            const birthDateText = row.querySelector(".birthDate").innerText;
+            if (birthDateText) {
+                const birthDate = new Date(birthDateText);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                row.querySelector(".age").innerText = age;
+            }
+        });
+    });
+        
+</script>
+
+<div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="me-auto">Click button to create a new employee.</strong>
+    </div>
+    <div class="toast-body">
+        <button class="btn btn-danger">
+            <a href="/Home/Create">Add Employee!</a>
+        </button>
+    </div>
+</div>
+
+<br />
+
+<form asp-action="Search" method="post" class="d-flex" style="gap: 10px;">
+    <input class="form-control" type="text" name="name" placeholder="Search by name" style="width: 20%;">
+    <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+</form>
+
+<br />
+
+<table class="table table-hover" id="employeeTable">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Full Name</th>
+            <th scope="col">Birth Date</th>
+            <th scope="col">Age</th>
+            <th scope="col">Department</th>
+            <th scope="col">Job Title</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Remove</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="table-dark">
+                <td>@item.id</td>
+                <td>@item.fullName</td>
+                <td class="birthDate">
+                    @{
+                        var englishCulture = new System.Globalization.CultureInfo("en-US");
+                        var BrithDate = item.brithDate == DateTime.MinValue
+                        ? "Not Available"
+                        : item.brithDate.ToString("d MMM yyyy", englishCulture).ToUpper();
+                    }
+                    <bdi>@BrithDate</bdi> 
+                </td>
+                <td class="age"></td>
+                <td>@item.depatmentName</td>
+                <td>@item.jobTitleName</td>
+                <td> <button class="btn btn-warning"><a href="/Home/Edit?Id=@item.id">Edit</a></button> </td>
+                <td> <button class="btn btn-danger"><a href="/Home/Remove?Id=@item.id">Delete</a></button> </td>
+            </tr>
+        }
+    </tbody>
+</table>

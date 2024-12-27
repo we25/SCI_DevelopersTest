@@ -1,0 +1,37 @@
+﻿@*
+    Create - Job Title
+*@
+
+@model JobTitleAddVM
+
+<form asp-controller="JobTitle" asp-action="Create" method="post" class="container mt-4">
+    <fieldset class="border p-4 rounded">
+
+        <h2 class="text-center mb-4">Add a new job title:</h2>
+
+        <div class="row mb-3">
+
+            <div class="col-md-4">
+                <label for="department" class="form-label">Department:</label>
+                <select asp-for="departmentId" id="DepartmentList" asp-items="ViewBag.DepartmentList" class="form-select">
+                    <option disabled selected>Select A Department</option>
+                </select>
+                <span asp-validation-for="departmentId"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label for="jobName" class="form-label">Job Name:</label>
+                <input type="text" asp-for="jobName" class="form-control" id="employeeName" placeholder="Enter Job Name">
+                <span asp-validation-for="jobName"></span>
+            </div>
+
+        </div>
+                
+        <div class="text-center mt-4">
+            <button class="btn btn-primary me-2">Save Changes</button>
+            <button class="btn btn-danger">
+                <a asp-controller="JobTitle" asp-action="Index">Exit</a>
+            </button>
+        </div>
+    </fieldset>
+</form>
